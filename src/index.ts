@@ -1,5 +1,6 @@
 import express from 'express';
 import inventarioRouter from './routes/inventory'
+import listaComprasRouter from './routes/listaCompras'
 
 const app = express()
 app.use(express.json())
@@ -16,3 +17,4 @@ app.listen(PORT, () => {
 })
 
 app.use('/inventario', inventarioRouter)
+app.use('/compras', listaComprasRouter)
