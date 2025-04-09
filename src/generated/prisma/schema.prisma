@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model inventario {
+  id              Int             @id @default(autoincrement())
+  nombre          String          @db.VarChar(255)
+  descripcion     String?         @db.VarChar(255)
+  cantidad_actual Int
+  cantidad_minima Int
+  usuario_id      Int?
+  usuarios        usuarios?       @relation(fields: [usuario_id], references: [id], onUpdate: NoAction, map: "fk_usuario_inventario")
+  lista_compras   lista_compras[]
+}
+
+model lista_compras {
+  id             Int         @id @default(autoincrement())
+  producto_id    Int?
+  nombre         String      @db.VarChar(255)
+  cantidad       Int
+  fecha_agregado DateTime?   @default(now()) @db.Timestamp(6)
+  usuario_id     Int?
+  comprado       Boolean?    @default(false)
+  usuarios       usuarios?   @relation(fields: [usuario_id], references: [id], onUpdate: NoAction, map: "fk_usuario_lista")
+  inventario     inventario? @relation(fields: [producto_id], references: [id], onUpdate: NoAction)
+}
+
+model usuarios {
+  id            Int             @id @default(autoincrement())
+  nombre        String          @db.VarChar(100)
+  email         String?         @db.VarChar(100)
+  contrase_a    String          @map("contraseña")
+  inventario    inventario[]
+  lista_compras lista_compras[]
+}
